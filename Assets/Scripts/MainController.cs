@@ -1,4 +1,5 @@
 ﻿using Game;
+using Game.Shed;
 using Profile;
 using UI;
 using UnityEngine;
@@ -10,6 +11,7 @@ using UnityEngine;
 
         private MainMenuController _mainMenuController;
         private SettingsMenuController _settingsMenuController;
+        private ShedController _shedController;
         private GameController _gameController;
 
         public MainController(Transform placeForUI, ProfilePlayer profilePlayer)
@@ -26,19 +28,34 @@ using UnityEngine;
             switch (state)
             {
                 case GameState.Start:
-                    DisposeAllControllers();
                     _mainMenuController = new MainMenuController(_placeForUI, _profilePlayer);
+                    _settingsMenuController?.Dispose();
+                    _shedController?.Dispose();
+                    _gameController?.Dispose();
                     break;
                 case GameState.Settings:
-                    DisposeAllControllers();
                     _settingsMenuController = new SettingsMenuController(_placeForUI, _profilePlayer);
+                    _mainMenuController?.Dispose();
+                    _shedController?.Dispose();
+                    _gameController?.Dispose();
+                    break;
+                case GameState.Shed:
+                    _shedController = new ShedController(_placeForUI, _profilePlayer);
+                    _mainMenuController?.Dispose();
+                    _settingsMenuController?.Dispose();
+                    _gameController?.Dispose();
                     break;
                 case GameState.Game:
-                    DisposeAllControllers();
-                    _gameController = new GameController(_profilePlayer);
+                    _gameController = new GameController(_placeForUI, _profilePlayer);
+                    _settingsMenuController?.Dispose();
+                    _mainMenuController?.Dispose();
+                    _shedController?.Dispose();
                     break;
                 default:
-                    DisposeAllControllers();
+                    _mainMenuController?.Dispose();
+                    _settingsMenuController?.Dispose();
+                    _gameController?.Dispose();
+                    _shedController?.Dispose();
                     break;
             }
         }
@@ -47,6 +64,7 @@ using UnityEngine;
         {
             _mainMenuController?.Dispose();
             _settingsMenuController?.Dispose();
+            _shedController?.Dispose();
             _gameController?.Dispose();
         }
 

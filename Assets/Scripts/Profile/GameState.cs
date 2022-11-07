@@ -5,6 +5,7 @@
         None,
         Start,
         Settings,
+        Shed,
         Game
         
     }

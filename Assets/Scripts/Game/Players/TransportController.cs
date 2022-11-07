@@ -1,8 +1,13 @@
 ﻿
+using Tool.Interfaces;
+using UnityEngine;
+
 namespace Game.Players
 {
-    public class TransportController : BaseController
+    internal abstract class TransportController : BaseController, IAbilityActivator
     {
+        public abstract GameObject ViewGameObject { get; }
+        public abstract TransportModel TransportModel { get; }
         
     }
 }

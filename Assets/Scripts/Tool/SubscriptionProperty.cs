@@ -1,4 +1,5 @@
 ﻿using System;
+using Profile;
 using Tool.Interfaces;
 
 namespace Tool
@@ -18,6 +19,9 @@ namespace Tool
                 _onChangeValue?.Invoke(_value);
             }
         }
+        
+        public SubscriptionProperty() {}
+        public SubscriptionProperty(TValue value) => _value = value;
 
         public void SubscribeOnChange(Action<TValue> subscriptionAction)
             => _onChangeValue += subscriptionAction;

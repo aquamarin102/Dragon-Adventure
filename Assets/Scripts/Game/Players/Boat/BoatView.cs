@@ -1,6 +1,8 @@
-﻿namespace Game.Players.Boat
+﻿using UnityEngine;
+
+namespace Game.Players.Boat
 {
-    internal class BoatView : TransportView
+    internal class BoatView : MonoBehaviour
 
     {
 

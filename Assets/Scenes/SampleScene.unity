@@ -275,7 +275,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d3ab7dd36b33304cab8dad9c9bc2f25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _placeForUI: {fileID: 517646346}
+  _placeForUi: {fileID: 517646346}
 --- !u!114 &763225679
 MonoBehaviour:
   m_ObjectHideFlags: 0

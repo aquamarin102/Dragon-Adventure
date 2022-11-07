@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Game.TapeBackground
 {
-    internal class TapeBackgroundsController : BaseController
+    internal class TapeBackgroundController : BaseController
     {
         private readonly ResourcePath _viewPath = new ResourcePath("Prefabs/Background");
 
@@ -14,16 +14,19 @@ namespace Game.TapeBackground
 
         private TapeBackgroundView _view;
 
-        public TapeBackgroundsController(SubscriptionProperty<float> leftMove, SubscriptionProperty<float> rightMove)
+
+        public TapeBackgroundController(
+            SubscriptionProperty<float> leftMove,
+            SubscriptionProperty<float> rightMove)
         {
             _view = LoadView();
             _diff = new SubscriptionProperty<float>();
 
             _leftMove = leftMove;
             _rightMove = rightMove;
-            
+
             _view.Init(_diff);
-            
+
             _leftMove.SubscribeOnChange(MoveLeft);
             _rightMove.SubscribeOnChange(MoveRight);
         }
@@ -34,9 +37,7 @@ namespace Game.TapeBackground
             _rightMove.UnSubscribeOnChange(MoveRight);
         }
 
-        private void MoveLeft(float value) => _diff.Value = -value;
-        private void MoveRight(float value) => _diff.Value = value;
-        
+
         private TapeBackgroundView LoadView()
         {
             GameObject prefab = ResourcesLoader.LoadPrefab(_viewPath);
@@ -45,7 +46,11 @@ namespace Game.TapeBackground
 
             return objectView.GetComponent<TapeBackgroundView>();
         }
-        
-        
+
+        private void MoveLeft(float value) =>
+            _diff.Value = -value;
+
+        private void MoveRight(float value) =>
+            _diff.Value = value;
     }
 }

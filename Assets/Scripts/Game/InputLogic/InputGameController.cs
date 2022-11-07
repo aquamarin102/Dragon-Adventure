@@ -6,7 +6,7 @@ namespace Game.InputLogic
 {
     internal class InputGameController : BaseController
     {
-        private readonly ResourcePath _resourcePath = new ResourcePath("Prefabs/AccelerationMove");
+        private readonly ResourcePath _resourcePath = new ResourcePath("Prefabs/KeyboardMove");
         private BaseInputView _view;
 
         public InputGameController(SubscriptionProperty<float> leftMove, SubscriptionProperty<float> rightMove,

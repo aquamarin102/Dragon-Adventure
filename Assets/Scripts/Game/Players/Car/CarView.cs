@@ -1,7 +1,9 @@
 ﻿
+using UnityEngine;
+
 namespace Game.Players.Car
 {
-    internal class CarView : TransportView
+    internal class CarView : MonoBehaviour
     {
         
     }

@@ -1,18 +1,24 @@
-﻿using Tool;
+﻿using Profile;
+using Tool;
 using UnityEngine;
 
 namespace Game.Players.Boat
 {
     internal class BoatController : TransportController
     {
-        private readonly ResourcePath _viewPath = new ResourcePath("Prefabs/Boat");
+        private readonly ResourcePath _viewPath = new ResourcePath("Prefabs/Transport/Boat");
         private readonly BoatView _view;
+        private readonly ProfilePlayer _profilePlayer;
 
-        public GameObject ViewGameObject => _view.gameObject;
+        public override GameObject ViewGameObject => _view.gameObject;
+        
+        public override TransportModel  TransportModel => _profilePlayer.CurrentTransport;
+        
 
-        public BoatController() : base()
+        public BoatController(ProfilePlayer profilePlayer)
         {
             _view = LoadView();
+            _profilePlayer = profilePlayer;
         }
 
         private BoatView LoadView()

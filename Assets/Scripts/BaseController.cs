@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
+using Tool.Interfaces;
 using UnityEngine;
 
 public abstract class BaseController
     {
         private List<BaseController> _baseControllers;
+        private List<IRepository> _repositories;
         private List<GameObject> _gameObjects;
         private bool _isDisposed;
 
@@ -15,11 +17,23 @@ public abstract class BaseController
             _isDisposed = true;
 
             DisposeBaseControllers();
+            DisposeRepositories();
             DisposeGameObjects();
             
             OnDispose();
         }
-        
+
+        private void DisposeRepositories()
+        { 
+            if (_repositories == null)
+                return;
+
+            foreach (IRepository repository in _repositories)
+                repository.Dispose();
+
+            _repositories.Clear();
+        }
+
         private void DisposeBaseControllers()
         {
             if(_baseControllers == null)
@@ -52,6 +66,12 @@ public abstract class BaseController
         {
             _baseControllers ??= new List<BaseController>();
             _baseControllers.Add(baseController);
+        }
+
+        protected void AddRepository(IRepository repository)
+        {
+            _repositories ??= new List<IRepository>();
+            _repositories.Add(repository);
         }
 
         protected void AddGameObject(GameObject gameObject)

@@ -14,10 +14,11 @@ namespace UI
         {
             _profilePlayer = profilePlayer;
             _view = LoadView(placeForUI);
-            _view.Init(SetGameStateToStart);
+            _view.Init(Back);
         }
 
-        private void SetGameStateToStart() => _profilePlayer.CurrentState.Value = GameState.Start;
+        private void Back() =>
+            _profilePlayer.CurrentState.Value = GameState.Start;
 
         private SettingsMenuView LoadView(Transform placeForUI)
         {

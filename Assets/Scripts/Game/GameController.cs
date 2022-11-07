@@ -5,45 +5,74 @@ using Game.Players.Car;
 using Game.TapeBackground;
 using Profile;
 using Tool;
+using System;
+using Game.AbilitySystem;
+using UnityEngine;
 
 namespace Game
 {
     internal class GameController : BaseController
     {
-        public GameController(ProfilePlayer profilePlayer)
+        private readonly ProfilePlayer _profilePlayer;
+        private readonly SubscriptionProperty<float> _leftMoveDiff;
+        private readonly SubscriptionProperty<float> _rightMoveDiff;
+
+        private readonly TapeBackgroundController _tapeBackgroundController;
+        private readonly InputGameController _inputGameController;
+        private readonly TransportController _transportController;
+        private readonly AbilitiesController _abilitiesController;
+
+
+        public GameController(Transform placeForUi, ProfilePlayer profilePlayer)
         {
-            var leftMoveDiff = new SubscriptionProperty<float>();
-            var rightMoveDiff = new SubscriptionProperty<float>();
+            _profilePlayer = profilePlayer;
+            _leftMoveDiff = new SubscriptionProperty<float>();
+            _rightMoveDiff = new SubscriptionProperty<float>();
 
-            var tapeBackgroundController = new TapeBackgroundsController(leftMoveDiff, rightMoveDiff);
-            AddController(tapeBackgroundController);
-            
-            var inputGameController = new InputGameController(leftMoveDiff, rightMoveDiff, profilePlayer.CurrentCar);
-            AddController(inputGameController);
-
-            LoadTransportController(profilePlayer.TransportType);
+            _tapeBackgroundController = CreateTapeBackground();
+            _inputGameController = CreateInputGameController();
+            _transportController = CreateTransportController();
+            _abilitiesController = CreateAbilitiesController(placeForUi);
         }
 
-        private void LoadTransportController(TransportType transportType)
-        {
-            TransportController transportController;
-            switch (transportType)
-            {
-                case TransportType.Car:
-                    transportController = new CarController();
-                    break;
-                case TransportType.Boat:
-                    transportController = new BoatController();
-                    break;
-                default:
-                    transportController = null;
-                    break;
-            }
 
-            if (transportController != null)
-            {
-                AddController(transportController);
-            }
+        private TapeBackgroundController CreateTapeBackground()
+        {
+            var tapeBackgroundController = new TapeBackgroundController(_leftMoveDiff, _rightMoveDiff);
+            AddController(tapeBackgroundController);
+
+            return tapeBackgroundController;
+        }
+
+        private InputGameController CreateInputGameController()
+        {
+            var inputGameController = new InputGameController(_leftMoveDiff, _rightMoveDiff, _profilePlayer.CurrentTransport);
+            AddController(inputGameController);
+
+            return inputGameController;
+        }
+
+        private TransportController CreateTransportController()
+        {
+            TransportController transportController =
+                _profilePlayer.CurrentTransport.Type switch
+                {
+                    TransportType.Car => new CarController(_profilePlayer),
+                    TransportType.Boat => new BoatController(_profilePlayer),
+                    _ => throw new ArgumentException(nameof(TransportType))
+                };
+
+            AddController(transportController);
+
+            return transportController;
+        }
+
+        private AbilitiesController CreateAbilitiesController(Transform placeForUi)
+        {
+            var abilitiesController = new AbilitiesController(placeForUi, _transportController);
+            AddController(abilitiesController);
+
+            return abilitiesController;
         }
     }
 }
