@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Tool.Interfaces;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
-public abstract class BaseController
+public abstract class BaseController : IDisposable
     {
-        private List<BaseController> _baseControllers;
-        private List<IRepository> _repositories;
+        private List<IDisposable> _disposableObjects;
         private List<GameObject> _gameObjects;
         private bool _isDisposed;
 
@@ -16,37 +17,24 @@ public abstract class BaseController
 
             _isDisposed = true;
 
-            DisposeBaseControllers();
-            DisposeRepositories();
+            DisposeDisposableObjects();
             DisposeGameObjects();
             
             OnDispose();
         }
 
-        private void DisposeRepositories()
-        { 
-            if (_repositories == null)
-                return;
-
-            foreach (IRepository repository in _repositories)
-                repository.Dispose();
-
-            _repositories.Clear();
-        }
-
-        private void DisposeBaseControllers()
+        private void DisposeDisposableObjects()
         {
-            if(_baseControllers == null)
+            if (_disposableObjects == null)
                 return;
 
-            foreach (var baseController in _baseControllers)
-            {
-                baseController.Dispose();
-            }
-            
-            _baseControllers.Clear();
+            foreach (IDisposable disposableObject in _disposableObjects)
+                disposableObject.Dispose();
+
+            _disposableObjects.Clear();
         }
-        
+
+
         private void DisposeGameObjects()
         {
             if(_gameObjects == null)
@@ -62,16 +50,14 @@ public abstract class BaseController
         
         protected virtual void OnDispose() { }
 
-        protected void AddController(BaseController baseController)
-        {
-            _baseControllers ??= new List<BaseController>();
-            _baseControllers.Add(baseController);
-        }
+        protected void AddController(BaseController baseController) => AddDisposableObject(baseController);
 
-        protected void AddRepository(IRepository repository)
+        protected void AddRepository(IRepository repository) => AddDisposableObject(repository);
+
+        public void AddDisposableObject(IDisposable disposable)
         {
-            _repositories ??= new List<IRepository>();
-            _repositories.Add(repository);
+            _disposableObjects ??= new List<IDisposable>();
+            _disposableObjects.Add(disposable);
         }
 
         protected void AddGameObject(GameObject gameObject)
@@ -79,4 +65,7 @@ public abstract class BaseController
             _gameObjects ??= new List<GameObject>();
             _gameObjects.Add(gameObject);
         }
+
+        protected void Log(string message) =>
+            Debug.Log($"[{GetType().Name}] {message}");
     }

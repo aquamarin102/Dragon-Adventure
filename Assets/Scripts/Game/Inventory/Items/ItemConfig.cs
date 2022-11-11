@@ -3,7 +3,7 @@
 namespace Game.Inventory.Items
 {
     [CreateAssetMenu(fileName = nameof(ItemConfig), menuName = "Config/" + nameof(ItemConfig))]
-    internal class ItemConfig : ScriptableObject
+    public class ItemConfig : ScriptableObject
     {
         [field : SerializeField] public string Id { get; private set; }
         [field : SerializeField] public string Title { get; private set; }

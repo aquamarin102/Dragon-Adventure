@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Game.Inventory
 {
-    internal class InventoryView : MonoBehaviour, IInventoryView
+    public class InventoryView : MonoBehaviour, IInventoryView
     {
         [SerializeField] private GameObject _itemViewPrefab;
         [SerializeField] private Transform _placeForItem;

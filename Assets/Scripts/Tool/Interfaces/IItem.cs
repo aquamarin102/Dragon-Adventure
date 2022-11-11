@@ -5,7 +5,7 @@ using UnityEngine.Events;
 
 namespace Tool.Interfaces
 {
-    internal interface IItem
+    public interface IItem
     {
         string Id { get; }
         ItemInfo Info { get; }

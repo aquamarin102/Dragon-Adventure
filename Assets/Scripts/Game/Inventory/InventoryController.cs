@@ -10,41 +10,34 @@ namespace Game.Inventory
 {
     internal class InventoryController : BaseController, IInventoryController
     {
-        private readonly ResourcePath _viewPath = new ResourcePath("Prefabs/Inventory/InventoryView");
-        private readonly ResourcePath _dataSourcePath = new ResourcePath("Configs/Inventory/ItemConfigDataSource");
-
         private readonly InventoryView _view;
         private readonly IInventoryModel _model;
         private readonly ItemsRepository _repository;
 
-        public InventoryController([NotNull] Transform placeForUI, [NotNull] IInventoryModel inventoryModel)
+        public InventoryController( Transform placeForUI, IInventoryModel inventoryModel)
         {
-            if (placeForUI == null)
-                throw new ArgumentNullException(nameof(placeForUI));
+            _view = new InventoryFactory().CreateView(placeForUI);
+            AddGameObject(_view.gameObject);
 
-            _model = inventoryModel ?? throw new ArgumentNullException(nameof(inventoryModel));
+            _model = inventoryModel;
 
-            _repository = CreateRepository();
+            _repository = new ItemRepositoryFactory().Create();
+            AddRepository(_repository);
+            
+            _view.Display(_repository.Items.Values, OnItemClicked);
+
+            foreach (var itemID in _model.EquippedItems)
+            {
+                _view.Select(itemID);
+            }
         }
 
-        private ItemsRepository CreateRepository()
+        protected override void OnDispose()
         {
-            ItemConfig[] itemConfigs = ContentDataSourceLoader.LoadItemConfigs(_dataSourcePath);
-            var repository = new ItemsRepository(itemConfigs);
-            AddRepository(repository);
-
-            return repository;
+            _view.Clear();
+            base.OnDispose();
         }
-        
-        private InventoryView LoadView(Transform placeForUi)
-        {
-            GameObject prefab = ResourcesLoader.LoadPrefab(_viewPath);
-            GameObject objectView = Object.Instantiate(prefab, placeForUi);
-            AddGameObject(objectView);
 
-            return objectView.GetComponent<InventoryView>();
-        }
-        
         private void OnItemClicked(string itemId)
         {
             bool equipped = _model.IsEquipped(itemId);

@@ -4,7 +4,7 @@ using Tool.Interfaces;
 
 namespace Game.Inventory.Items
 {
-    internal class ItemsRepository : Repository<string, IItem, ItemConfig>, IItemsRepository
+    public class ItemsRepository : Repository<string, IItem, ItemConfig>, IItemsRepository
     {
         public ItemsRepository(IEnumerable<ItemConfig> configs) : base(configs)
         {

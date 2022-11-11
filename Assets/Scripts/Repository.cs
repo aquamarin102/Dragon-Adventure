@@ -4,7 +4,7 @@ using Tool.Interfaces;
 
 namespace DefaultNamespace
 {
-    internal abstract class Repository<TKey, TValue, TConfig> : IRepository
+    public abstract class Repository<TKey, TValue, TConfig> : IRepository
     {
         private readonly Dictionary<TKey, TValue> _items;
         

@@ -14,8 +14,8 @@ namespace Game.Inventory.Items
             Info = info;
         }
     }
-    
-    internal readonly struct ItemInfo
+
+    public readonly struct ItemInfo
     {
         public string Title { get; }
         public Sprite Icon { get; }
