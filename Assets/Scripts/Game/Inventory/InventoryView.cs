@@ -42,8 +42,12 @@ namespace Game.Inventory
             GameObject objectView = Instantiate(_itemViewPrefab, _placeForItem, false);
             ItemView itemView = objectView.GetComponent<ItemView>();
             
-            itemView.Init(item, () => itemClicked?.Invoke(item.Id));
-
+            itemView.Init
+            (
+                item,
+                () => itemClicked?.Invoke(item.Id)
+            );
+            
             return itemView;
         }
         

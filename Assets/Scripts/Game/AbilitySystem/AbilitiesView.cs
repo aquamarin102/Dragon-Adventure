@@ -16,8 +16,7 @@ namespace Game.AbilitySystem
 
         private void OnDestroy() => Clear();
 
-
-        public void Display(IReadOnlyList<IAbilityItem> abilityItems, Action<string> clicked)
+        public void Display(IEnumerable<IAbilityItem> abilityItems, Action<string> clicked)
         {
             Clear();
 

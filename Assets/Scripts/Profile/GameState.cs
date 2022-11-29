@@ -6,7 +6,7 @@
         Start,
         Settings,
         Shed,
-        Game
-        
+        Game,
+        DailyReward
     }
 }

@@ -17,7 +17,7 @@ namespace Tool.Interfaces
     
     internal interface IAbilitiesView
     {
-        void Display(IReadOnlyList<IAbilityItem> abilityItems, Action<string> clicked);
+        void Display(IEnumerable<IAbilityItem> abilityItems, Action<string> clicked);
         void Clear();
     }
     
@@ -35,7 +35,7 @@ namespace Tool.Interfaces
     internal interface IAbilityActivator
     {
         GameObject ViewGameObject { get; }
-        TransportModel TransportModel { get; }
+        float JumpHeight { get; }
     }
     
     internal interface IAbilityItem

@@ -1,4 +1,6 @@
 ﻿using Game;
+using Game.Fight;
+using Game.RewardSystem;
 using Game.Shed;
 using Profile;
 using UI;
@@ -6,72 +8,71 @@ using UnityEngine;
 
     internal class MainController : BaseController
     {
-        private readonly Transform _placeForUI;
-        private readonly ProfilePlayer _profilePlayer;
+        private readonly Transform _placeForUi;
+    private readonly ProfilePlayer _profilePlayer;
 
-        private MainMenuController _mainMenuController;
-        private SettingsMenuController _settingsMenuController;
-        private ShedController _shedController;
-        private GameController _gameController;
+    private MainMenuController _mainMenuController;
+    private SettingsMenuController _settingsMenuController;
+    private RewardController _rewardController;
+    private FightController _fightController;
+    private GameController _gameController;
+    private ShedMvcContainer _shedContainer;
 
-        public MainController(Transform placeForUI, ProfilePlayer profilePlayer)
+
+    public MainController(Transform placeForUi, ProfilePlayer profilePlayer)
+    {
+        _placeForUi = placeForUi;
+        _profilePlayer = profilePlayer;
+
+        profilePlayer.CurrentState.SubscribeOnChange(OnChangeGameState);
+        OnChangeGameState(_profilePlayer.CurrentState.Value);
+    }
+
+    protected override void OnDispose()
+    {
+        if (_settingsMenuController != null) _settingsMenuController.OnBackPressed += OnSettingsBackPressed;
+        DisposeChildObjects();
+        _profilePlayer.CurrentState.UnSubscribeOnChange(OnChangeGameState);
+    }
+
+
+    private void OnChangeGameState(GameState state)
+    {
+        DisposeChildObjects();
+
+        switch (state)
         {
-            _placeForUI = placeForUI;
-            _profilePlayer = profilePlayer;
-            
-            profilePlayer.CurrentState.SubscribeOnChange(OnChangedGameState);
-            OnChangedGameState(_profilePlayer.CurrentState.Value);
+            case GameState.Start:
+                _mainMenuController = new MainMenuController(_placeForUi, _profilePlayer);
+                break;
+            case GameState.Settings:
+                _settingsMenuController = new SettingsMenuController(_placeForUi, _profilePlayer);
+                _settingsMenuController.OnBackPressed += OnSettingsBackPressed;
+                break;
+            case GameState.Shed:
+                _shedContainer = new ShedMvcContainer(_profilePlayer, _placeForUi);
+                break;
+            case GameState.DailyReward:
+                _rewardController = new RewardController(_placeForUi, _profilePlayer);
+                break;
+            case GameState.Game:
+                _gameController = new GameController(_placeForUi, _profilePlayer);
+                break;
         }
+    }
 
-        private void OnChangedGameState(GameState state)
-        {
-            switch (state)
-            {
-                case GameState.Start:
-                    _mainMenuController = new MainMenuController(_placeForUI, _profilePlayer);
-                    _settingsMenuController?.Dispose();
-                    _shedController?.Dispose();
-                    _gameController?.Dispose();
-                    break;
-                case GameState.Settings:
-                    _settingsMenuController = new SettingsMenuController(_placeForUI, _profilePlayer);
-                    _mainMenuController?.Dispose();
-                    _shedController?.Dispose();
-                    _gameController?.Dispose();
-                    break;
-                case GameState.Shed:
-                    _shedController = new ShedController(_placeForUI, _profilePlayer);
-                    _mainMenuController?.Dispose();
-                    _settingsMenuController?.Dispose();
-                    _gameController?.Dispose();
-                    break;
-                case GameState.Game:
-                    _gameController = new GameController(_placeForUI, _profilePlayer);
-                    _settingsMenuController?.Dispose();
-                    _mainMenuController?.Dispose();
-                    _shedController?.Dispose();
-                    break;
-                default:
-                    _mainMenuController?.Dispose();
-                    _settingsMenuController?.Dispose();
-                    _gameController?.Dispose();
-                    _shedController?.Dispose();
-                    break;
-            }
-        }
+    private void OnSettingsBackPressed()
+    {
+        _profilePlayer.CurrentState.Value = GameState.Start;
+    }
 
-        private void DisposeAllControllers()
-        {
-            _mainMenuController?.Dispose();
-            _settingsMenuController?.Dispose();
-            _shedController?.Dispose();
-            _gameController?.Dispose();
-        }
-
-        protected override void OnDispose()
-        {
-            DisposeAllControllers();
-            
-            _profilePlayer.CurrentState.UnSubscribeOnChange(OnChangedGameState);
-        }
+    private void DisposeChildObjects()
+    {
+        _mainMenuController?.Dispose();
+        _settingsMenuController?.Dispose();
+        _rewardController?.Dispose();
+        _fightController?.Dispose();
+        _gameController?.Dispose();
+        _shedContainer?.Dispose();
+    }
     }

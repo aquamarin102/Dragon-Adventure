@@ -10,33 +10,32 @@ namespace Game.Inventory
 {
     internal class InventoryController : BaseController, IInventoryController
     {
-        private readonly InventoryView _view;
+        private readonly IInventoryView _view;
         private readonly IInventoryModel _model;
-        private readonly ItemsRepository _repository;
+        private readonly IItemsRepository _repository;
 
-        public InventoryController( Transform placeForUI, IInventoryModel inventoryModel)
+        public InventoryController(
+            [NotNull] IInventoryView view,
+            [NotNull] IInventoryModel model,
+            [NotNull] IItemsRepository repository)
         {
-            _view = new InventoryFactory().CreateView(placeForUI);
-            AddGameObject(_view.gameObject);
+            _view
+                = view ?? throw new ArgumentNullException(nameof(view));
 
-            _model = inventoryModel;
+            _model
+                = model ?? throw new ArgumentNullException(nameof(model));
 
-            _repository = new ItemRepositoryFactory().Create();
-            AddRepository(_repository);
-            
+            _repository
+                = repository ?? throw new ArgumentNullException(nameof(repository));
+
             _view.Display(_repository.Items.Values, OnItemClicked);
 
-            foreach (var itemID in _model.EquippedItems)
-            {
-                _view.Select(itemID);
-            }
+            foreach (string itemId in _model.EquippedItems)
+                _view.Select(itemId);
         }
 
-        protected override void OnDispose()
-        {
+        protected override void OnDispose() =>
             _view.Clear();
-            base.OnDispose();
-        }
 
         private void OnItemClicked(string itemId)
         {

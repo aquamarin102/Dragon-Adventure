@@ -8,18 +8,13 @@ namespace Game.Players.Boat
     {
         private readonly ResourcePath _viewPath = new ResourcePath("Prefabs/Transport/Boat");
         private readonly BoatView _view;
-        private readonly ProfilePlayer _profilePlayer;
 
         public override GameObject ViewGameObject => _view.gameObject;
-        
-        public override TransportModel  TransportModel => _profilePlayer.CurrentTransport;
-        
 
-        public BoatController(ProfilePlayer profilePlayer)
-        {
+
+        public BoatController(TransportModel model) : base(model) =>
             _view = LoadView();
-            _profilePlayer = profilePlayer;
-        }
+
 
         private BoatView LoadView()
         {

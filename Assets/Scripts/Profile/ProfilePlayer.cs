@@ -1,7 +1,6 @@
 ﻿using Game.Inventory;
 using Game.Players;
-using Game.Players.Boat;
-using Game.Players.Car;
+using Game.RewardSystem.Resource;
 using Tool;
 
 namespace Profile
@@ -11,13 +10,17 @@ namespace Profile
         public readonly SubscriptionProperty<GameState> CurrentState;
         public readonly TransportModel CurrentTransport;
         public readonly InventoryModel Inventory;
+        public readonly ResourceModel Currency;
+        
 
 
-        public ProfilePlayer(float transportSpeed, float jumpHeight, TransportType transportType, GameState initialState)
+        public ProfilePlayer(float transportSpeed, float transportJumpHeight, TransportType transportType, GameState initialState)
         {
             CurrentState = new SubscriptionProperty<GameState>(initialState);
-            CurrentTransport = new TransportModel(transportSpeed, jumpHeight, transportType);
+            CurrentTransport = new TransportModel(transportSpeed, transportJumpHeight, transportType);
             Inventory = new InventoryModel();
+            Currency = new ResourceModel();
         }
+        
     }
 }

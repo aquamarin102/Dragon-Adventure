@@ -10,7 +10,7 @@ namespace Game.InputLogic
         private void Start() => UpdateManager.SubscribeToUpdate(Move);
         private void OnDestroy() => UpdateManager.UnsubscribeFromUpdate(Move);
         
-        private void Move()
+        protected override void Move()
         {
             Vector3 direction = ClacDirection();
             float moveValue = _speed * _inputMultiplier * Time.deltaTime * direction.x;

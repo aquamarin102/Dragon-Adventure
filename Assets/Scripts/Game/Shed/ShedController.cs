@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Game.Inventory;
 using Game.Players;
 using JetBrains.Annotations;
@@ -10,45 +11,73 @@ namespace Game.Shed
 {
     internal class ShedController : BaseController, IShedController
     {
-        private readonly ShedView _view;
+        private readonly IShedView _view;
         private readonly ProfilePlayer _profilePlayer;
-        private readonly InventoryController _inventoryController;
-        private readonly TransportUpgrader _transportUpgrader;
+        private readonly BaseMVCContainer _inventoryMvcContainer;
+        private readonly IUpgradeHandlersRepository _upgradeHandlersRepository;
 
-        public ShedController([NotNull] Transform placeForUI, [NotNull] ProfilePlayer profilePlayer)
+       public ShedController(
+            [NotNull] IShedView view,
+            [NotNull] ProfilePlayer profilePlayer,
+            [NotNull] BaseMVCContainer inventoryMvcContainer,
+            [NotNull] IUpgradeHandlersRepository upgradeHandlersRepository)
         {
-            if (placeForUI == null)
-                throw new ArgumentNullException(nameof(placeForUI));
+            _view
+                = view ?? throw new ArgumentNullException(nameof(view));
 
-            _profilePlayer = profilePlayer ?? throw new ArgumentNullException(nameof(profilePlayer));
+            _profilePlayer
+                = profilePlayer ?? throw new ArgumentNullException(nameof(profilePlayer));
 
-            var _inventoryController = new InventoryController(placeForUI, _profilePlayer.Inventory);
-            AddController(_inventoryController);
+            _upgradeHandlersRepository
+                = upgradeHandlersRepository ?? throw new ArgumentNullException(nameof(upgradeHandlersRepository));
 
-            _view = new ShedFactory().CreateView(placeForUI);
-            AddGameObject(_view.gameObject);
-
-            _transportUpgrader = new TransportUpgrader(_profilePlayer.CurrentTransport, _profilePlayer.Inventory.EquippedItems);
-            AddDisposableObject(_transportUpgrader);
+            _inventoryMvcContainer
+                = inventoryMvcContainer ?? throw new ArgumentNullException(nameof(inventoryMvcContainer));
 
             _view.Init(Apply, Back);
         }
 
-        private void Back()
+        protected override void OnDispose()
         {
-            _transportUpgrader.Upgrade();
-
-            _profilePlayer.CurrentState.Value = GameState.Start;
-            Log($"Back. Current Speed: {_profilePlayer.CurrentTransport.Speed}");
+            _view.Deinit();
+            base.OnDispose();
         }
 
         private void Apply()
         {
-            _transportUpgrader.Upgrade();
+            _profilePlayer.CurrentTransport.Restore();
+
+            UpgradeWithEquippedItems(
+                _profilePlayer.CurrentTransport,
+                _profilePlayer.Inventory.EquippedItems,
+                _upgradeHandlersRepository.Items);
 
             _profilePlayer.CurrentState.Value = GameState.Start;
-            Log($"Apply. Current Speed: {_profilePlayer.CurrentTransport.Speed}");
+            Log("Apply. " +
+                $"Current Speed: {_profilePlayer.CurrentTransport.Speed}. " +
+                $"Current Jump Height: {_profilePlayer.CurrentTransport.JumpHeight}");
         }
 
+        private void Back()
+        {
+            _profilePlayer.CurrentState.Value = GameState.Start;
+            Log("Back. " +
+                $"Current Speed: {_profilePlayer.CurrentTransport.Speed}. " +
+                $"Current Jump Height: {_profilePlayer.CurrentTransport.JumpHeight}");
+        }
+
+
+        private void UpgradeWithEquippedItems(
+            IUpgradable upgradable,
+            IReadOnlyList<string> equippedItems,
+            IReadOnlyDictionary<string, IUpgradeHandler> upgradeHandlers)
+        {
+            foreach (string itemId in equippedItems)
+                if (upgradeHandlers.TryGetValue(itemId, out IUpgradeHandler handler))
+                    handler.Upgrade(upgradable);
+        }
     }
+
 }
+
+   

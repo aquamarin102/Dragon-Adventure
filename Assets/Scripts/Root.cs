@@ -3,11 +3,10 @@ using UnityEngine;
 
     internal class Root : MonoBehaviour
     {
-        private const float SpeedCar = 15f;
-        private const float JumpHeightCar = 250f;
-        private const GameState InitialState = GameState.Start;
-        private const TransportType TransportType = Profile.TransportType.Car;
+        [Header("Initial Settings")]
+        [SerializeField] private InitialProfilePlayer _initialProfilePlayer;
 
+        [Header("Scene Objects")]
         [SerializeField] private Transform _placeForUi;
 
         private MainController _mainController;
@@ -15,7 +14,7 @@ using UnityEngine;
 
         private void Awake()
         {
-            var profilePlayer = new ProfilePlayer(SpeedCar, JumpHeightCar, TransportType, InitialState);
+            var profilePlayer = CreateProfilePlayer(_initialProfilePlayer);
             _mainController = new MainController(_placeForUi, profilePlayer);
         }
 
@@ -23,5 +22,15 @@ using UnityEngine;
         {
             _mainController.Dispose();
         }
+
+
+        private ProfilePlayer CreateProfilePlayer(InitialProfilePlayer initialProfilePlayer) =>
+            new ProfilePlayer
+            (
+                initialProfilePlayer.Transport.Speed,
+                initialProfilePlayer.Transport.JumpHeight,
+                initialProfilePlayer.Transport.Type,
+                initialProfilePlayer.State
+            );
     }
 

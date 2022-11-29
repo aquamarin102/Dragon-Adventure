@@ -1,5 +1,4 @@
-﻿using JoostenProductions;
-using Tool;
+﻿using Tool;
 using UnityEngine;
 
 namespace Game.InputLogic
@@ -8,18 +7,19 @@ namespace Game.InputLogic
     {
         [SerializeField] private float _inputMultiplier = 10;
 
-        public override void Init(SubscriptionProperty<float> leftMove, SubscriptionProperty<float> rightMove, float speed)
+        public override void Init(
+            SubscriptionProperty<float> leftMove,
+            SubscriptionProperty<float> rightMove,
+            float speed)
         {
             base.Init(leftMove, rightMove, speed);
             Input.gyro.enabled = true;
         }
 
-        private void Start() => UpdateManager.SubscribeToUpdate(Move);
-        private void OnDestroy() => UpdateManager.UnsubscribeFromUpdate(Move);
-        
-        private void Move()
+
+        protected override void Move()
         {
-            if(!SystemInfo.supportsGyroscope)
+            if (!SystemInfo.supportsGyroscope)
                 return;
 
             Quaternion quaternion = Input.gyro.attitude;
@@ -32,15 +32,9 @@ namespace Game.InputLogic
             float sign = Mathf.Sign(moveValue);
 
             if (sign > 0)
-            {
                 OnRightMove(abs);
-            }
             else
-            {
                 OnLeftMove(abs);
-            }
-
-
         }
     }
 }

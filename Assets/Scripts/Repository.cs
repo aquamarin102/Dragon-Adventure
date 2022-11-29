@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
+using Game.AbilitySystem.Abilities;
 using Game.Inventory.Items;
 using Tool.Interfaces;
 
-namespace DefaultNamespace
-{
     public abstract class Repository<TKey, TValue, TConfig> : IRepository
     {
         private readonly Dictionary<TKey, TValue> _items;
@@ -30,4 +29,3 @@ namespace DefaultNamespace
         protected abstract TKey GetKey(TConfig config);
 
     }
-}

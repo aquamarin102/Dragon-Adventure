@@ -58,7 +58,7 @@ namespace Game.InputLogic
         private void SetActive(bool active) =>
             _container.alpha = active ? _enabledAlpha : _disabledAlpha;
 
-        private void Move()
+        protected override void Move()
         {
             if (!_usingJoystick)
                 return;

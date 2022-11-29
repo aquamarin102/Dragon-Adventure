@@ -8,30 +8,21 @@ namespace Game.InputLogic
 {
     internal class InputJoystickView : BaseInputView
     {
-        private const string HORIZONTAL_AXIS = "Horizontal";
-        
-        [SerializeField] private float _inputMultiplier = 10f;
+        [SerializeField] private float _inputMultiplier = 10;
 
-        private void Start() => UpdateManager.SubscribeToUpdate(Move);
 
-        private void OnDestroy() => UpdateManager.UnsubscribeFromUpdate(Move);
-        
-        private void Move()
+        protected override void Move()
         {
-            float axisOffset = CrossPlatformInputManager.GetAxis(HORIZONTAL_AXIS);
+            float axisOffset = CrossPlatformInputManager.GetAxis("Horizontal");
             float moveValue = _inputMultiplier * Time.deltaTime * axisOffset;
 
             float abs = Mathf.Abs(moveValue);
             float sign = Mathf.Sign(moveValue);
 
             if (sign > 0)
-            {
                 OnRightMove(abs);
-            }
-            else
-            {
+            else if (sign < 0)
                 OnLeftMove(abs);
-            }
         }
     }
 }

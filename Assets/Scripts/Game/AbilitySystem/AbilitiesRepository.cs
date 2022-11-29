@@ -1,21 +1,24 @@
 ﻿using System.Collections.Generic;
-using DefaultNamespace;
 using Game.AbilitySystem.Abilities;
 using Tool.Interfaces;
 
 namespace Game.AbilitySystem
 {
-    internal class AbilitiesRepository : Repository<string, IAbility, AbilityItemConfig>
+    internal class AbilitiesRepository : Repository<string, IAbility, IAbilityItem>, IAbilitiesRepository
     {
-        public AbilitiesRepository(IEnumerable<AbilityItemConfig> configs) : base(configs)
+        public AbilitiesRepository(IEnumerable<IAbilityItem> abilityItems) : base(abilityItems)
         { }
 
-        protected override string GetKey(AbilityItemConfig config) => config.Id;
-
-        protected override IAbility CreateItem(AbilityItemConfig config) =>
-            config.Type switch
+        protected override IAbility CreateItem(IAbilityItem abilityItem) =>
+            abilityItem.Type switch
             {
-                AbilityType.Gun => new GunAbility(config), AbilityType.Jump => new JumpAbility(config), _ => StubAbility.Default
+                AbilityType.Gun => new GunAbility(abilityItem),
+                AbilityType.Jump => new JumpAbility(abilityItem),
+                _ => StubAbility.Default
             };
+
+
+
+        protected override string GetKey(IAbilityItem abilityItem) => abilityItem.Id;
     }
 }

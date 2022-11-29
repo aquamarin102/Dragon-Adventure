@@ -14,5 +14,6 @@ namespace Game.AbilitySystem.Abilities
 
         public string Id => _itemConfig.Id;
         public Sprite Icon => _itemConfig.Icon;
+
     }
 }

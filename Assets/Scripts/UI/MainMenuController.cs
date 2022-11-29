@@ -15,7 +15,7 @@ namespace UI
         {
             _profilePlayer = profilePlayer;
             _view = LoadView(placeForUi);
-            _view.Init(StartGame, Settings, Shed);
+            _view.Init(StartGame, Settings, Shed, DailyReward, ExitGame);
         }
 
         private MainMenuView LoadView(Transform placeForUi)
@@ -36,5 +36,17 @@ namespace UI
         private void Shed() =>
             _profilePlayer.CurrentState.Value = GameState.Shed;
         
+        private void DailyReward() => 
+            _profilePlayer.CurrentState.Value = GameState.DailyReward;
+        
+        private void ExitGame()
+        {
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#endif
+            Application.Quit();
+        }
+
     }
+    
 }

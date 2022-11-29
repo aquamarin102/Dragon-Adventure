@@ -4,7 +4,6 @@
     {
         None,
         Speed,
-        FirePower,
         JumpHeight,
     }
 }
