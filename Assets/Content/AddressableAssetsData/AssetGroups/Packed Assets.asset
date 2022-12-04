@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Packed Assets
+  m_EditorClassIdentifier: 
+  m_GroupName: Packed Assets
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 4a2b1b0153d17114f97772326155fe27
+  m_SerializeEntries:
+  - m_GUID: dbfbaf1b945682f4c9ff5100236c64cb
+    m_Address: Prefabs/NewButton
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Prefab
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: bdf03f515ebd5ec47956ba048cee807e, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 1434703a409350a4599e28c0a218d2eb, type: 2}
+    - {fileID: 11400000, guid: 3ab655f370882c443a1447d724063fae, type: 2}
